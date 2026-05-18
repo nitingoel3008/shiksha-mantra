@@ -734,16 +734,19 @@
   }
 
   // ── Send to Google Sheets ──────────────────────────────────────────────────
-  async function sendToSheet(payload) {
-    const params = new URLSearchParams(payload);
-    // Use no-cors mode — response will be opaque but data will arrive in the sheet
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
-    });
-  }
+async function sendToSheet(payload) {
+  const params = new URLSearchParams({
+    ...payload,
+    source: window.location.href
+  });
+
+  await fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  });
+}
 
   // ── Demo Modal Submit ──────────────────────────────────────────────────────
   async function submitDemo() {
