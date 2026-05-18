@@ -162,8 +162,15 @@
   .form-group label{font-size:.78rem;font-weight:600;color:var(--text);text-transform:uppercase;letter-spacing:.04em;}
   .form-group input,.form-group select{padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--text);background:var(--gray);transition:border-color .2s;}
   .form-group input:focus,.form-group select:focus{outline:none;border-color:var(--blue);}
-  .form-submit{width:100%;background:var(--blue);color:white;border:none;padding:13px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:background .2s,transform .15s;margin-top:4px;}
+  .form-submit{width:100%;background:var(--blue);color:white;border:none;padding:13px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:background .2s,transform .15s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
   .form-submit:hover{background:var(--navy);transform:translateY(-1px);}
+  .form-submit:disabled{background:var(--muted);cursor:not-allowed;transform:none;}
+
+  /* Spinner */
+  .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+  .form-submit.loading .spinner{display:inline-block;}
+  .form-submit.loading .btn-text{opacity:.7;}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   /* FOOTER */
   footer{background:var(--navy);color:rgba(255,255,255,.7);padding:56px 6vw 28px;}
@@ -194,6 +201,12 @@
   .modal-success h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--navy);}
   .modal-success p{font-size:.88rem;color:var(--muted);}
 
+  /* Toast */
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:white;padding:13px 24px;border-radius:10px;font-size:.88rem;font-weight:500;z-index:999;opacity:0;transition:all .35s ease;pointer-events:none;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.success{background:#16a34a;}
+  .toast.error{background:#dc2626;}
+
   /* RESPONSIVE */
   @media(max-width:900px){
     .hero-inner,.about-grid,.contact-grid{grid-template-columns:1fr;}
@@ -215,6 +228,9 @@
 </style>
 </head>
 <body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- NAV -->
 <nav>
@@ -470,36 +486,12 @@
       <p class="section-sub">We combine expert teaching, structured curriculum, and personal care to help every student thrive.</p>
     </div>
     <div class="why-grid">
-      <div class="why-card reveal">
-        <div class="why-icon">👨‍🏫</div>
-        <h3>Experienced Faculty</h3>
-        <p>Handpicked educators with 5–15 years of teaching experience and deep subject knowledge.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🧩</div>
-        <h3>Concept-First Approach</h3>
-        <p>We build genuine understanding before exam preparation — resulting in lasting retention.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">📊</div>
-        <h3>Progress Tracking</h3>
-        <p>Weekly tests, monthly report cards, and direct parent communication ensure no student falls behind.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🕐</div>
-        <h3>Flexible Batch Timings</h3>
-        <p>Morning, afternoon, and evening batches to suit school schedules and family needs.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">💬</div>
-        <h3>Doubt Resolution</h3>
-        <p>Dedicated doubt sessions and WhatsApp support so students never get stuck for long.</p>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-icon">🆓</div>
-        <h3>Free Demo Class</h3>
-        <p>Try before you enroll — every new student gets a free demo class to experience our teaching style.</p>
-      </div>
+      <div class="why-card reveal"><div class="why-icon">👨‍🏫</div><h3>Experienced Faculty</h3><p>Handpicked educators with 5–15 years of teaching experience and deep subject knowledge.</p></div>
+      <div class="why-card reveal"><div class="why-icon">🧩</div><h3>Concept-First Approach</h3><p>We build genuine understanding before exam preparation — resulting in lasting retention.</p></div>
+      <div class="why-card reveal"><div class="why-icon">📊</div><h3>Progress Tracking</h3><p>Weekly tests, monthly report cards, and direct parent communication ensure no student falls behind.</p></div>
+      <div class="why-card reveal"><div class="why-icon">🕐</div><h3>Flexible Batch Timings</h3><p>Morning, afternoon, and evening batches to suit school schedules and family needs.</p></div>
+      <div class="why-card reveal"><div class="why-icon">💬</div><h3>Doubt Resolution</h3><p>Dedicated doubt sessions and WhatsApp support so students never get stuck for long.</p></div>
+      <div class="why-card reveal"><div class="why-icon">🆓</div><h3>Free Demo Class</h3><p>Try before you enroll — every new student gets a free demo class to experience our teaching style.</p></div>
     </div>
   </div>
 </section>
@@ -513,38 +505,10 @@
       <p class="section-sub">Real results, real stories — from students across all our programmes.</p>
     </div>
     <div class="testi-grid">
-      <div class="testi-card reveal">
-        <div class="testi-stars">★★★★★</div>
-        <p>My daughter struggled with Maths in Class 9. After joining Shiksha Mantra, she scored 94 in her boards. The teachers are patient and truly caring.</p>
-        <div class="testi-author">
-          <div class="testi-avatar">RS</div>
-          <div><div class="testi-name">Rekha Sharma</div><div class="testi-role">Parent of Class 10 student</div></div>
-        </div>
-      </div>
-      <div class="testi-card reveal">
-        <div class="testi-stars">★★★★★</div>
-        <p>The Python course was excellent. I had zero coding knowledge and now I've built two real projects. The batch timings were perfect for me too.</p>
-        <div class="testi-author">
-          <div class="testi-avatar">AK</div>
-          <div><div class="testi-name">Aman Kumar</div><div class="testi-role">Python Programming student</div></div>
-        </div>
-      </div>
-      <div class="testi-card reveal">
-        <div class="testi-stars">★★★★★</div>
-        <p>Commerce coaching here is top-notch. Accounts and Economics were my weak points — now they're my strongest subjects. Thank you, Shiksha Mantra!</p>
-        <div class="testi-author">
-          <div class="testi-avatar">PG</div>
-          <div><div class="testi-name">Priya Gupta</div><div class="testi-role">Class 12 Commerce</div></div>
-        </div>
-      </div>
-      <div class="testi-card reveal">
-        <div class="testi-stars">★★★★★</div>
-        <p>My son scored 96% in Class 5 after joining the foundation batch. The teachers make concepts fun and easy to understand. Highly recommended!</p>
-        <div class="testi-author">
-          <div class="testi-avatar">MV</div>
-          <div><div class="testi-name">Manish Verma</div><div class="testi-role">Parent of Class 5 student</div></div>
-        </div>
-      </div>
+      <div class="testi-card reveal"><div class="testi-stars">★★★★★</div><p>My daughter struggled with Maths in Class 9. After joining Shiksha Mantra, she scored 94 in her boards. The teachers are patient and truly caring.</p><div class="testi-author"><div class="testi-avatar">RS</div><div><div class="testi-name">Rekha Sharma</div><div class="testi-role">Parent of Class 10 student</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-stars">★★★★★</div><p>The Python course was excellent. I had zero coding knowledge and now I've built two real projects. The batch timings were perfect for me too.</p><div class="testi-author"><div class="testi-avatar">AK</div><div><div class="testi-name">Aman Kumar</div><div class="testi-role">Python Programming student</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-stars">★★★★★</div><p>Commerce coaching here is top-notch. Accounts and Economics were my weak points — now they're my strongest subjects. Thank you, Shiksha Mantra!</p><div class="testi-author"><div class="testi-avatar">PG</div><div><div class="testi-name">Priya Gupta</div><div class="testi-role">Class 12 Commerce</div></div></div></div>
+      <div class="testi-card reveal"><div class="testi-stars">★★★★★</div><p>My son scored 96% in Class 5 after joining the foundation batch. The teachers make concepts fun and easy to understand. Highly recommended!</p><div class="testi-author"><div class="testi-avatar">MV</div><div><div class="testi-name">Manish Verma</div><div class="testi-role">Parent of Class 5 student</div></div></div></div>
     </div>
   </div>
 </section>
@@ -558,30 +522,12 @@
       <p class="section-sub">Everything you need to know before joining Shiksha Mantra.</p>
     </div>
     <div class="faq-list reveal">
-      <div class="faq-item open">
-        <div class="faq-q" onclick="toggleFaq(this)">How do I book a free demo class?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">Simply click the "Book Free Demo Class" button, fill in your details and preferred subject, and our team will confirm a slot within 24 hours.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What boards do you cover?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">We cover CBSE, ICSE, and UP Board for Classes 1–12. Our curriculum is designed to align with all major board examination patterns.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">What is the batch size?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">We keep batch sizes small (8–15 students) to ensure every student gets personalised attention from the teacher.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Are IT programs suitable for beginners?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">Yes! Our Python, Web Development, and Java courses start from absolute basics. No prior coding experience is required.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Do you provide study material?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">Yes, all enrolled students receive comprehensive printed notes, practice sheets, and access to digital resources for their respective programmes.</div></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">Can I switch batch timing after enrollment?<span class="faq-icon">+</span></div>
-        <div class="faq-a"><div class="faq-a-inner">Absolutely. Subject to availability, students can change their batch timing. Just contact our front desk or WhatsApp us.</div></div>
-      </div>
+      <div class="faq-item open"><div class="faq-q" onclick="toggleFaq(this)">How do I book a free demo class?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">Simply click the "Book Free Demo Class" button, fill in your details and preferred subject, and our team will confirm a slot within 24 hours.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What boards do you cover?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">We cover CBSE, ICSE, and UP Board for Classes 1–12. Our curriculum is designed to align with all major board examination patterns.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What is the batch size?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">We keep batch sizes small (8–15 students) to ensure every student gets personalised attention from the teacher.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Are IT programs suitable for beginners?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">Yes! Our Python, Web Development, and Java courses start from absolute basics. No prior coding experience is required.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do you provide study material?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">Yes, all enrolled students receive comprehensive printed notes, practice sheets, and access to digital resources for their respective programmes.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I switch batch timing after enrollment?<span class="faq-icon">+</span></div><div class="faq-a"><div class="faq-a-inner">Absolutely. Subject to availability, students can change their batch timing. Just contact our front desk or WhatsApp us.</div></div></div>
     </div>
   </div>
 </section>
@@ -598,11 +544,11 @@
       <div class="contact-info reveal">
         <div class="contact-info-item">
           <div class="contact-info-icon">📍</div>
-          <div class="contact-info-text"><h4>Our Address</h4><p>Shiksha Mantra Institute<br>Sector 15, Faridabad, Haryana – 121007</p></div>
+          <div class="contact-info-text"><h4>Our Address</h4><p>Shiksha Mantra Institute<br>J Block, Kalkaji, New Delhi – 110019</p></div>
         </div>
         <div class="contact-info-item">
           <div class="contact-info-icon">📞</div>
-          <div class="contact-info-text"><h4>Call Us</h4><p>+91 98XXX XXXXX<br>+91 98XXX XXXXX</p></div>
+          <div class="contact-info-text"><h4>Call Us</h4><p>+91 89204 27550</p></div>
         </div>
         <div class="contact-info-item">
           <div class="contact-info-icon">📧</div>
@@ -617,12 +563,12 @@
       <div class="contact-form reveal">
         <h3>Send Us a Message</h3>
         <div class="form-row">
-          <div class="form-group"><label>First Name</label><input type="text" placeholder="Rahul"/></div>
-          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Sharma"/></div>
+          <div class="form-group"><label>First Name</label><input type="text" id="contactFirstName" placeholder="Rahul"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" id="contactLastName" placeholder="Sharma"/></div>
         </div>
-        <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 98765 43210"/></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="contactPhone" placeholder="+91 98765 43210"/></div>
         <div class="form-group"><label>Interested In</label>
-          <select>
+          <select id="contactCourse">
             <option>Class 1–5 Foundation</option>
             <option>Class 6–10</option>
             <option>Class 11–12 (Science)</option>
@@ -633,8 +579,11 @@
             <option>Java Programming</option>
           </select>
         </div>
-        <div class="form-group"><label>Message (Optional)</label><input type="text" placeholder="Any questions or details…"/></div>
-        <button class="form-submit" onclick="submitForm()">Send Message →</button>
+        <div class="form-group"><label>Message (Optional)</label><input type="text" id="contactMessage" placeholder="Any questions or details…"/></div>
+        <button class="form-submit" id="contactSubmitBtn" onclick="submitContactForm()">
+          <span class="btn-text">Send Message →</span>
+          <span class="spinner"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -712,7 +661,10 @@
           <option>Java Programming</option>
         </select>
       </div>
-      <button class="form-submit" onclick="submitDemo()">Book Free Demo →</button>
+      <button class="form-submit" id="demoSubmitBtn" onclick="submitDemo()">
+        <span class="btn-text">Book Free Demo →</span>
+        <span class="spinner"></span>
+      </button>
     </div>
     <div class="modal-success" id="modalSuccess">
       <div class="success-icon">🎉</div>
@@ -723,6 +675,11 @@
 </div>
 
 <script>
+  // ─── CONFIGURATION ─────────────────────────────────────────────────────────
+  // STEP: Paste your Google Apps Script Web App URL here after deploying
+  const SHEET_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+  // ───────────────────────────────────────────────────────────────────────────
+
   // Tab switching
   function switchTab(btn, id) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -733,50 +690,144 @@
 
   // FAQ accordion
   function toggleFaq(el) {
-    const item = el.parentElement;
-    item.classList.toggle('open');
+    el.parentElement.classList.toggle('open');
   }
 
   // Scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
   }, { threshold: 0.1 });
-  revealEls.forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
   // Modal
   function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
-  function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); resetModal(); }
-  function closeModalOutside(e) { if(e.target === document.getElementById('modalOverlay')) closeModal(); }
-  function resetModal() {
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
     setTimeout(() => {
       document.getElementById('modalForm').style.display = '';
       document.getElementById('modalSuccess').style.display = 'none';
+      // reset button state
+      setLoading('demoSubmitBtn', false);
     }, 300);
   }
-  function submitDemo() {
-    const name = document.getElementById('demoName').value;
-    const phone = document.getElementById('demoPhone').value;
-    if (!name || !phone) { alert('Please fill in your name and phone number.'); return; }
-    document.getElementById('modalForm').style.display = 'none';
-    document.getElementById('modalSuccess').style.display = 'block';
-  }
-  function submitForm() { alert('Thank you! We will get back to you shortly.'); }
+  function closeModalOutside(e) { if(e.target === document.getElementById('modalOverlay')) closeModal(); }
 
-  // Hamburger (basic)
+  // Toast
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => { t.className = 'toast'; }, 4000);
+  }
+
+  // Loading state helper
+  function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    if (loading) {
+      btn.classList.add('loading');
+      btn.disabled = true;
+    } else {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  }
+
+  // ── Send to Google Sheets ──────────────────────────────────────────────────
+  async function sendToSheet(payload) {
+    const params = new URLSearchParams(payload);
+    // Use no-cors mode — response will be opaque but data will arrive in the sheet
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    });
+  }
+
+  // ── Demo Modal Submit ──────────────────────────────────────────────────────
+  async function submitDemo() {
+    const name  = document.getElementById('demoName').value.trim();
+    const phone = document.getElementById('demoPhone').value.trim();
+    const course = document.getElementById('demoCourse').value;
+
+    if (!name || !phone) {
+      showToast('Please fill in your name and phone number.', 'error');
+      return;
+    }
+
+    setLoading('demoSubmitBtn', true);
+
+    try {
+      await sendToSheet({
+        formType: 'Demo Booking',
+        name,
+        phone,
+        course,
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      });
+      document.getElementById('modalForm').style.display = 'none';
+      document.getElementById('modalSuccess').style.display = 'block';
+    } catch (err) {
+      showToast('Something went wrong. Please try again.', 'error');
+      setLoading('demoSubmitBtn', false);
+    }
+  }
+
+  // ── Contact Form Submit ────────────────────────────────────────────────────
+  async function submitContactForm() {
+    const firstName = document.getElementById('contactFirstName').value.trim();
+    const lastName  = document.getElementById('contactLastName').value.trim();
+    const phone     = document.getElementById('contactPhone').value.trim();
+    const course    = document.getElementById('contactCourse').value;
+    const message   = document.getElementById('contactMessage').value.trim();
+
+    if (!firstName || !phone) {
+      showToast('Please enter at least your name and phone number.', 'error');
+      return;
+    }
+
+    setLoading('contactSubmitBtn', true);
+
+    try {
+      await sendToSheet({
+        formType: 'Contact Form',
+        name: `${firstName} ${lastName}`.trim(),
+        phone,
+        course,
+        message,
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      });
+      showToast('✅ Message sent! We\'ll reach out soon.', 'success');
+      // Clear fields
+      ['contactFirstName','contactLastName','contactPhone','contactMessage'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    } catch (err) {
+      showToast('Something went wrong. Please try again.', 'error');
+    } finally {
+      setLoading('contactSubmitBtn', false);
+    }
+  }
+
+  // Hamburger
   function toggleMenu() {
     const links = document.querySelector('.nav-links');
     if (!links) return;
-    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '70px';
-    links.style.left = '0';
-    links.style.right = '0';
-    links.style.background = 'white';
-    links.style.padding = '16px 6vw';
-    links.style.borderBottom = '1px solid var(--border)';
-    links.style.boxShadow = '0 8px 20px rgba(0,0,0,.08)';
+    const isOpen = links.style.display === 'flex';
+    Object.assign(links.style, {
+      display: isOpen ? 'none' : 'flex',
+      flexDirection: 'column',
+      position: 'absolute',
+      top: '70px',
+      left: '0',
+      right: '0',
+      background: 'white',
+      padding: '16px 6vw',
+      borderBottom: '1px solid var(--border)',
+      boxShadow: '0 8px 20px rgba(0,0,0,.08)',
+      zIndex: '99'
+    });
   }
 </script>
 </body>
